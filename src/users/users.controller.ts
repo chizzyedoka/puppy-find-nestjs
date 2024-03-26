@@ -18,16 +18,6 @@ import { UpdateUserDto } from './dto/UpdateUser.dto';
 @Controller('users')
 export class UsersController {
   constructor(private readonly userService: UsersService) {}
-  // @Get() // GET /users?type=customer
-  // findAllUsers(@Query('type') type?: 'buyer' | 'seller') {
-  //   return this.userService.findAllUsers(type);
-  // }
-
-  // // GET /users/:id
-  // @Get(':id')
-  // findOneUser(@Param('id') id: string) {
-  //   return this.userService.findOneUser(parseInt(id));
-  // }
 
   @Post('signup') // POST /users/signup
   createUser(@Body(ValidationPipe) createUserDto: CreateUserDto) {

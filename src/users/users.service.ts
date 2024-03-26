@@ -9,13 +9,19 @@ import { UpdateUserDto } from './dto/UpdateUser.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from 'src/schemas/User.schema';
 import { Model } from 'mongoose';
+import { Seller } from 'src/schemas/Sellers.schema';
+import { Buyer } from 'src/schemas/Buyers.schema';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+  constructor(
+    @InjectModel(User.name) private userModel: Model<User>,
+    @InjectModel(Seller.name) private sellerModel: Model<Seller>,
+    @InjectModel(Buyer.name) private buyerModel: Model<Buyer>,
+  ) {}
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
-    // check if User in database
+    // check if User already exists in database
     const user = await this.userModel.findOne({ email: createUserDto.email });
     if (user) {
       throw new HttpException(
@@ -23,8 +29,17 @@ export class UsersService {
         HttpStatus.UNPROCESSABLE_ENTITY,
       );
     }
-    // create user if not found
+
+    // if User doesn't exist--- create the User
     const createdUser = new this.userModel(createUserDto);
+    // check if the User is a buer or seller and save in appropriate DB
+    if (createUserDto.type === 'seller') {
+      const createdSeller = new this.sellerModel(createUserDto);
+      await createdSeller.save();
+    } else {
+      const createdBuyer = new this.buyerModel(createUserDto);
+      await createdBuyer.save();
+    }
     await createdUser.save();
     return createdUser;
   }
