@@ -23,25 +23,31 @@ export class UsersService {
         HttpStatus.UNPROCESSABLE_ENTITY,
       );
     }
-
+    // create user if not found
     const createdUser = new this.userModel(createUserDto);
     await createdUser.save();
     return createdUser;
   }
 
-  // update(id: number, updatedUser: UpdateUserDto) {
-  //   this.users = this.users.map((user) => {
-  //     if (user.id === id) {
-  //       return { ...user, ...updatedUser };
-  //     }
-  //     return user;
-  //   });
-  //   return this.findOneUser(id);
-  // }
+  async update(email: string, updateUserDto: UpdateUserDto) {
+    // check if User in database
+    // ToDo - ensure users can't change their email and username
+    const user = await this.userModel.findOneAndUpdate(
+      { email },
+      updateUserDto,
+      { new: true },
+    );
+    if (!user) {
+      throw new HttpException('User does not exist', HttpStatus.NOT_FOUND);
+    }
+    return user;
+  }
 
-  // delete(id: number) {
-  //   const removedUser = this.findOneUser(id);
-  //   this.users = this.users.filter((user) => user.id !== id);
-  //   return removedUser;
-  // }
+  async delete(username: string) {
+    const removedUser = await this.userModel.findOneAndDelete({ username });
+    if (!removedUser) {
+      throw new HttpException('User does not exist', HttpStatus.NOT_FOUND);
+    }
+    return removedUser;
+  }
 }

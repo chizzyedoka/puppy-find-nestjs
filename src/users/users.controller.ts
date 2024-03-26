@@ -34,17 +34,17 @@ export class UsersController {
     return this.userService.createUser(createUserDto);
   }
 
-  // @Patch(':id') // PATCH /users/:id
-  // update(
-  //   @Param('id', ParseIntPipe) id: number,
-  //   @Body(ValidationPipe)
-  //   userUpdate: UpdateUserDto,
-  // ) {
-  //   return this.userService.update(id, userUpdate);
-  // }
+  @Patch(':email') // PATCH /users/:email
+  update(
+    @Param('email') email: string,
+    @Body(ValidationPipe)
+    userUpdate: UpdateUserDto,
+  ) {
+    return this.userService.update(email, userUpdate);
+  }
 
-  // @Delete(':id') // DELETE /users/:id
-  // delete(@Param('id') id: string) {
-  //   return this.userService.delete(+id);
-  // }
+  @Delete(':username') // DELETE /users/:username
+  delete(@Param('username') username: string) {
+    return this.userService.delete(username);
+  }
 }
