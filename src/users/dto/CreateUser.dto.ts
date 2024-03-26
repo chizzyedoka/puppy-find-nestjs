@@ -1,15 +1,36 @@
-import { IsEmail, IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsPhoneNumber,
+  IsString,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 
 export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
-  name: string;
+  username: string;
 
   @IsEmail()
+  @IsNotEmpty()
   email: string;
 
+  @IsNotEmpty()
+  @MinLength(8)
+  @MaxLength(30)
+  password: string;
+
   @IsEnum(['buyer', 'seller'], {
-    message: 'UserType required',
+    message: 'type: ["buyer" or "seller"] is required',
   })
-  userType: 'buyer' | 'seller';
+  type: 'buyer' | 'seller';
+
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(11)
+  @MinLength(11)
+  phoneNumber: number;
 }
